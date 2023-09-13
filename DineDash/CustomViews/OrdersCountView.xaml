@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:pv="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" xmlns:model="clr-namespace:DineDash.Models"
+             x:Class="DineDash.CustomViews.OrdersCountView">
+  <ContentView.Content>
+        <pv:PancakeView Style="{StaticResource ButtonPanelStyle}" 
+                    BackgroundColor="{StaticResource colorAccent}"
+                         CornerRadius="20, 20, 20, 20" Margin="5">
+
+           
+
+        </pv:PancakeView>
+    </ContentView.Content>
+</ContentView>

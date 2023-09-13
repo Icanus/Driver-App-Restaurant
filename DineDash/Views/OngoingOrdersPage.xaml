@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage  xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DineDash.ViewModels"
+             xmlns:pv="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             xmlns:converters="clr-namespace:DineDash.Converters"
+             xmlns:behaviors="clr-namespace:DineDash.Behaviors"
+             xmlns:res="clr-namespace:DineDash.Resources" xmlns:customview="clr-namespace:DineDash.CustomViews" xmlns:dragview="clr-namespace:Xamarin.Forms.DragView;assembly=Xamarin.Forms.DragView"
+              BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundColorDark},
+                Light={StaticResource BackgroundColorLight}}"
+             x:Class="DineDash.Views.OngoingOrdersPage">
+
+    <ContentPage.Resources>
+        <converters:OrderStatusIconConverter x:Key="OrderStatusIconConverter"/>
+        <converters:ShortDateConverter x:Key="ShortDateConverter"/>
+        <behaviors:SwipeBehavior x:Key="MySwipeBehavior" />
+    </ContentPage.Resources>
+    <AbsoluteLayout>
+        <RelativeLayout>
+
+            <ContentView
+                        RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                            Property=Width, Factor=1}"
+                        RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                            Property=Height, Factor=1}">
+                <StackLayout x:Name="mystacklayout" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+
+                </StackLayout>
+            </ContentView>
+
+        </RelativeLayout>
+        <StackLayout x:Name="stackLayout"
+                     Padding="10"
+                     BackgroundColor="White"
+                     AbsoluteLayout.LayoutFlags="All"
+                     behaviors:SwipeBehaviorAttachedProperties.SwipeDownHeight="0.2">
+            <StackLayout.Behaviors>
+                <behaviors:SwipeBehavior x:Name="MySwipeBehavior" />
+            </StackLayout.Behaviors>
+            <StackLayout.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Up" Swiped="OnSwipeUp" />
+                <SwipeGestureRecognizer Direction="Down" Swiped="OnSwipeDown" />
+            </StackLayout.GestureRecognizers>
+            <BoxView Color="#d3d3d3" WidthRequest="100" HorizontalOptions="Center" HeightRequest="5" />
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="1" Text="On the way" Command="{Binding InitiateOnTheWayCommand}" IsEnabled="True" IsVisible="{Binding OnTheWayVisibility}" BorderWidth="1" Style="{StaticResource SecondaryButtonStyle}"/>
+                <CollectionView
+                                Grid.Row="2" 
+                                ItemsSource="{Binding OngoingOrders}"
+                                SelectionMode="None"
+                                HeightRequest="250"
+                                AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="1,1,1,1"
+                                HorizontalScrollBarVisibility="Always">
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+
+                        <DataTemplate>
+                            <customview:OngoingOrdersView OngoingOrder="{Binding .}" />
+                        </DataTemplate>
+
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+            </Grid>
+        </StackLayout>
+        <Frame x:Name="AbsoluteStackLayout"
+                     IsVisible="{Binding HasOrders}"
+                     AbsoluteLayout.LayoutBounds="0.02, 0.01, 140, 80"
+                     AbsoluteLayout.LayoutFlags="PositionProportional"
+                     CornerRadius="10"
+                     BackgroundColor="{StaticResource colorAccent}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Style="{StaticResource SmallPrimaryLabelStyle}" TextColor="White" Grid.Row="1">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="ETA: "/>
+                            <Span Text="{Binding ETA}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label Style="{StaticResource SmallPrimaryLabelStyle}" TextColor="White" Grid.Row="0">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="#ORDS-000"/>
+                            <Span Text="{Binding Id}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </Grid>
+        </Frame>
+        <ImageButton
+                    Clicked="ImageButton_Clicked"
+                    Source="{Binding MapImage}"
+                    BackgroundColor="Transparent"
+                    HeightRequest="50"
+                    AbsoluteLayout.LayoutBounds="0.97,0.3,0.08,0.1"
+                    AbsoluteLayout.LayoutFlags="All"/>
+
+        <BoxView x:Name="Filter"
+                     AbsoluteLayout.LayoutBounds="0,0,1,1"
+                     AbsoluteLayout.LayoutFlags="All"
+                     BackgroundColor="#d3d3d3"
+                     IsVisible="{Binding IsBusy}"
+                     Opacity="0.60" />
+        <ActivityIndicator  IsRunning="True"
+                            VerticalOptions="CenterAndExpand"
+                            IsVisible="{Binding IsBusy}"
+                            HorizontalOptions="CenterAndExpand"
+                             AbsoluteLayout.LayoutBounds="0.5,0.5,0.5,0.5"
+                                        AbsoluteLayout.LayoutFlags="All"/>
+    </AbsoluteLayout>
+</ContentPage>

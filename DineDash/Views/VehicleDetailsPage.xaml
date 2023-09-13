@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:res="clr-namespace:DineDash.Resources"
+             xmlns:md="clr-namespace:DineDash.MaterialDesign"
+             xmlns:pv="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+             xmlns:abstractions="clr-namespace:Plugin.CrossPlatformTintedImage.Abstractions;assembly=Plugin.CrossPlatformTintedImage.Abstractions" xmlns:controls="clr-namespace:DineDash.Controls" xmlns:xct="clr-namespace:DineDash.Behaviors" xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:controls1="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
+             NavigationPage.HasNavigationBar="False"
+             x:Class="DineDash.Views.VehicleDetailsPage"
+             BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundColorDark},
+                Light={StaticResource BackgroundColorLight}}">
+    <AbsoluteLayout>
+        <RelativeLayout>
+            <ScrollView RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,
+                        Property=Width, Factor=1}"
+                    RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,
+                        Property=Height, Factor=1}">
+                <StackLayout Padding="30" Spacing="10" VerticalOptions="FillAndExpand" HorizontalOptions="Center">
+                    <Grid HorizontalOptions="FillAndExpand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80*"/>
+                            <ColumnDefinition Width="20*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Style="{StaticResource BoldTitlePrimaryLabelStyle}" TextColor="Black" 
+                        Text="{x:Static res:AppResources.VehicleDetails}" VerticalOptions="Center"/>
+
+                        <abstractions:TintedImage
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="End"
+                                        Grid.Column="1"
+                                         BackgroundColor="Transparent">
+
+                            <abstractions:TintedImage.Source>
+
+                                <FontImageSource Glyph="{x:Static md:Icons.Close}"
+                                                     FontFamily="Material"
+                                                     Color="WhiteSmoke"
+                                                     Size="30" />
+
+                            </abstractions:TintedImage.Source>
+                            <abstractions:TintedImage.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="1"
+                                        Command="{Binding CloseCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </abstractions:TintedImage.GestureRecognizers>
+                        </abstractions:TintedImage>
+                    </Grid>
+                    <BoxView Margin="10" BackgroundColor="#d3d3d3" HeightRequest="1"/>
+                    <Grid VerticalOptions="Center" HorizontalOptions="Center" WidthRequest="100">
+                        <Frame CornerRadius="50" WidthRequest="80" HasShadow="False" Padding="0">
+                            <forms:CachedImage Source="{Binding ImageFile}" Aspect="AspectFill" HeightRequest="100" WidthRequest="100" >
+                                <forms:CachedImage.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding UploadImage}"/>
+                                </forms:CachedImage.GestureRecognizers>
+                            </forms:CachedImage>
+                        </Frame>
+                    </Grid>
+                    <Label IsVisible="{Binding IsLabelStringVisible}" Text="Click Here to upload profile" FontAttributes="Italic" HorizontalTextAlignment="Center"/>
+                    <Label Text="Car Description*"
+                       Style="{StaticResource SmallTertiaryLabelStyle}" />
+                    <controls:CustomEntry BorderColor="#d3d3d3"  Padding="10" BorderRadius="5" Placeholder="Eg. Station wagon, Toyota Yaris, Green cab with yellow stripes" ReturnType="Next" Text="{Binding CarDescription, Mode=TwoWay}" >
+                    </controls:CustomEntry>
+
+                    <Label Text="Car Registration*"
+                       Style="{StaticResource SmallTertiaryLabelStyle}" />
+                    <controls:CustomEntry BorderColor="#d3d3d3"  Padding="10" BorderRadius="5" Placeholder="Eg. LT1000" ReturnType="Next" Text="{Binding CarRegistration, Mode=TwoWay}" >
+                    </controls:CustomEntry>
+                    <Label Text="Click Here to upload vehicle image" FontAttributes="Italic" HorizontalTextAlignment="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding UploadCarImage}"></TapGestureRecognizer>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <forms:CachedImage Source="{Binding CarImageFile}" Aspect="AspectFit" BackgroundColor="#f3f3f3" HorizontalOptions="FillAndExpand" HeightRequest="180" >
+                        <forms:CachedImage.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding UploadCarImage}"></TapGestureRecognizer>
+                        </forms:CachedImage.GestureRecognizers>
+                    </forms:CachedImage>
+                </StackLayout>
+            </ScrollView>
+
+            <pv:PancakeView Style="{StaticResource ButtonPanelStyle}"
+                        RelativeLayout.WidthConstraint="{ConstraintExpression
+                            Type=RelativeToParent, Property=Width, Factor=1}"
+                        RelativeLayout.YConstraint="{ConstraintExpression
+                            Type=RelativeToParent, Property=Height, Factor=1,
+                            Constant=-90}">
+
+                <pv:PancakeView.Shadow>
+                    <pv:DropShadow />
+                </pv:PancakeView.Shadow>
+
+                <StackLayout Spacing="20">
+
+                    <Button Style="{StaticResource PrimaryButtonStyle}"
+                        IsEnabled="{Binding IsLoginEnabled}"
+                        Text="{x:Static res:AppResources.Submit}"
+                        Command="{Binding SubmitCommand}"
+                        HeightRequest="50"/>
+
+                </StackLayout>
+
+            </pv:PancakeView>
+        </RelativeLayout>
+
+        <BoxView x:Name="Filter"
+                     AbsoluteLayout.LayoutBounds="0,0,1,1"
+                     AbsoluteLayout.LayoutFlags="All"
+                     BackgroundColor="#d3d3d3"
+                     IsVisible="{Binding IsBusy}"
+                     Opacity="0.60" />
+        <ActivityIndicator  IsRunning="True"
+                            VerticalOptions="CenterAndExpand"
+                            IsVisible="{Binding IsBusy}"
+                            HorizontalOptions="CenterAndExpand"
+                             AbsoluteLayout.LayoutBounds="0.5,0.5,0.5,0.5"
+                                        AbsoluteLayout.LayoutFlags="All"/>
+    </AbsoluteLayout>
+</ContentPage>

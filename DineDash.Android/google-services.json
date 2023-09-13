@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "679925561634",
+    "project_id": "dinedashauth",
+    "storage_bucket": "dinedashauth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679925561634:android:74ae103f51e32e359c0d7b",
+        "android_client_info": {
+          "package_name": "com.dinedash.del"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679925561634-1fsgjirl00aaebl7ar6kbjatmbalklt2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dinedash.del",
+            "certificate_hash": "e63d039384baa83f45db0ef2b601ac561ad87be3"
+          }
+        },
+        {
+          "client_id": "679925561634-tr85cj0m718coh35l1t936m3k07ftl46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuoWqeXFT42X-IEBB1RCFdDcWGkPj5ZPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679925561634-fpr0clp8uah40gti6vbbb0eee6r5j58i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

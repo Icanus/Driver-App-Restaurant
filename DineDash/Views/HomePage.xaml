@@ -1,0 +1,349 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DineDash.Views.HomePage"
+             xmlns:vm="clr-namespace:DineDash.ViewModels"
+             xmlns:res="clr-namespace:DineDash.Resources"
+             NavigationPage.HasNavigationBar="False"
+             xmlns:pv="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" 
+             xmlns:customview="clr-namespace:DineDash.CustomViews" 
+             xmlns:model="clr-namespace:DineDash.Models" 
+             xmlns:md="clr-namespace:DineDash.MaterialDesign"
+             xmlns:dragview="clr-namespace:Xamarin.Forms.DragView;assembly=Xamarin.Forms.DragView" 
+             xmlns:controls="clr-namespace:DineDash.Controls"
+             xmlns:converters="clr-namespace:DineDash.Converters" xmlns:abstractions="clr-namespace:Plugin.CrossPlatformTintedImage.Abstractions;assembly=Plugin.CrossPlatformTintedImage.Abstractions" 
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
+             xmlns:fftransformations="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
+             BackgroundColor="{AppThemeBinding Dark={StaticResource BackgroundColorDark},
+                Light={StaticResource BackgroundColorLight}}">
+
+    <ContentPage.Resources>
+        <converters:OrderStatusIconConverter x:Key="OrderStatusIconConverter"/>
+        <converters:LongDateConverter x:Key="LongDateConverter"/>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <AbsoluteLayout>
+            <Grid HorizontalOptions="FillAndExpand" BackgroundColor="{StaticResource colorAccent}" AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,0.09">
+
+                <Grid VerticalOptions="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".15*"/>
+                        <ColumnDefinition Width=".70*"/>
+                        <ColumnDefinition Width=".15*"/>
+                    </Grid.ColumnDefinitions>
+                    <ImageButton Source="menu" Command="{Binding OpenMenu}" BackgroundColor="Transparent" Grid.Row="0" VerticalOptions="CenterAndExpand" Grid.Column="0" HeightRequest="20" WidthRequest="20"></ImageButton>
+                    <Label 
+                           Style="{StaticResource BoldLabelStyle}" HorizontalOptions="Center" Text="Ben's Kitchen" TextColor="#ffff" VerticalOptions="Center" Grid.Row="0"  Grid.Column="1"></Label>
+                    <ImageButton Source="{Binding CartIcon}" Command="{Binding OpenBasket}" BackgroundColor="Transparent" Grid.Row="0"  Grid.Column="2" VerticalOptions="CenterAndExpand" HeightRequest="20" WidthRequest="20"></ImageButton>
+                </Grid>
+            </Grid>
+            <RefreshView
+                 Margin="{Binding RefreshMargin}"
+                 AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="1,1,1,.92" BackgroundColor="White"
+                 Command="{Binding LoadItemsCommand}"
+                 IsRefreshing="{Binding IsBusy, Mode=TwoWay}"
+                 Padding="5">
+
+                <StackLayout>
+                    <customview:DeviceOfflineView Margin="0,8,0,0" IsVisible="{Binding IsNotConnected}" />
+                    <pv:PancakeView
+                         Margin="0,8,0,0"
+                        CornerRadius="5"
+                        BackgroundColor="White" Padding="10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="AUTO"/>
+                            </Grid.RowDefinitions>
+                            <ffimageloading:CachedImage 
+                                DownsampleToViewSize="true"
+                                Grid.Row="0" Grid.Column="0"
+                                        VerticalOptions="FillAndExpand"
+                                        HorizontalOptions="CenterAndExpand"
+                                        Aspect="AspectFit"
+                                        HeightRequest="150"
+                                        WidthRequest="150"
+                                        Source="{Binding ImageFile}"
+                                         BackgroundColor="Transparent">
+                                <ffimageloading:CachedImage.Transformations>
+                                    <fftransformations:CircleTransformation/>
+                                </ffimageloading:CachedImage.Transformations>
+                            </ffimageloading:CachedImage>
+                            <Label Text="Welcome Clark" Grid.Row="1" HorizontalTextAlignment="Center" Style="{StaticResource SmallTertiaryLabelStyle}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Welcome "/>
+                                        <Span Text="{Binding FullName}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </Grid>
+
+                    </pv:PancakeView>
+                    <ScrollView Padding="10" Background="White">
+                        <CollectionView ItemsSource="{Binding Items}"
+                        SelectionMode="None">
+
+                            <CollectionView.ItemsLayout>
+
+                                <LinearItemsLayout Orientation="Vertical"
+                                   ItemSpacing="0" />
+
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.ItemTemplate>
+
+                                <DataTemplate>
+
+                                    <ContentView Padding="5">
+
+                                        <pv:PancakeView CornerRadius="20,20,20,20"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource CardColorLight},
+                                                    Dark={StaticResource CardColorDark}}">
+                                            <StackLayout Orientation="Vertical">
+                                                <Grid 
+                                          Padding="10"
+                                          RowSpacing="5"
+                                        ColumnDefinitions="Auto,*,*"
+                                          RowDefinitions="Auto"
+                                        x:DataType="model:OpenOrderParameter">
+                                                    <Label
+                                        Grid.Column="0"
+                                            Text="{Binding OrderStatus, Converter={StaticResource OrderStatusIconConverter}}"
+                                            TextColor="{AppThemeBinding Light={StaticResource PrimaryColorLight},
+                                            Dark={StaticResource PrimaryColorDark}}"
+                                            FontFamily="Material"
+                                            FontSize="30"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start" />
+
+                                                    <Label Grid.Column="1"
+                                       Style="{StaticResource SmallSecondaryLabelStyle}"
+                                       MaxLines="1"
+                                        VerticalOptions="Center"
+                                       VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="Start"
+                                       LineBreakMode="TailTruncation">
+
+                                                        <Label.FormattedText>
+
+                                                            <FormattedString>
+
+                                                                <Span Text="{Binding Status}"
+                                                                    Style="{StaticResource BoldSmallSecondaryLabelStyle}"/>
+                                                                <Span Text=": ORD-000" />
+                                                                <Span Text="{Binding Id}" />
+
+                                                            </FormattedString>
+
+                                                        </Label.FormattedText>
+
+                                                    </Label>
+                                                    <Grid 
+                                                    Grid.Column="2"
+                                                    HorizontalOptions="End"
+                                                    VerticalOptions="Center">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <pv:PancakeView CornerRadius="15"
+                                                        Grid.Column="0"
+                                                        IsVisible="{Binding IsNotViewed}"
+                                                        Padding="5" 
+                                                        HorizontalOptions="End"
+                                                        VerticalOptions="Center"
+                                                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryColorLight},
+                                                        Dark={StaticResource PrimaryColorDark}}">
+
+                                                            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+
+                                                                <Label 
+                                                               Text="New"
+                                                               FontSize="Small"
+                                                               FontAttributes="Bold"
+                                                               HorizontalTextAlignment="Center"
+                                                               VerticalTextAlignment="Center" TextColor="#ffffff"/>
+
+                                                            </StackLayout>
+                                                        </pv:PancakeView>
+                                                        <Image Grid.Column="1">
+                                                            <Image.Source>
+                                                                <FontImageSource Glyph="{x:Static md:Icons.ArrowDownward}"
+                                                                 FontFamily="Material"
+                                                                 Color="{AppThemeBinding Light={StaticResource SecondaryTextColorLight},
+                                                                 Dark={StaticResource SecondaryTextColorDark}}"
+                                                                 Size="20" />
+                                                                </Image.Source>
+                                                                <Image.Triggers>
+                                                                <DataTrigger TargetType="Image"
+                                                                Binding="{Binding IsExpanded}"
+                                                                Value="True">
+                                                                    <Setter Property="Source" >
+                                                                        <Setter.Value>
+                                                                            <FontImageSource Glyph="{x:Static md:Icons.ArrowUpward}"
+                                                                                FontFamily="Material"
+                                                                                Color="{AppThemeBinding Light={StaticResource SecondaryTextColorLight},
+                                                                                Dark={StaticResource SecondaryTextColorDark}}"
+                                                                                Size="20" />
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </DataTrigger>
+                                                            </Image.Triggers>
+                                                        </Image>
+                                                    </Grid>
+                                                    <Grid.GestureRecognizers>
+                                                        <TapGestureRecognizer  Command="{Binding Source={RelativeSource
+                                                            AncestorType={x:Type vm:HomeViewModel}}, Path=ExpandCommand}"
+                                                          CommandParameter="{Binding .}"/>
+                                                    </Grid.GestureRecognizers>
+                                                </Grid>
+                                                <StackLayout x:DataType="model:OpenOrderParameter" Orientation="Vertical" IsVisible="{Binding IsExpanded}">
+                                                    <Grid 
+                                Grid.Row="0"
+                                ColumnDefinitions="Auto, Auto, Auto"
+                                  RowDefinitions="Auto, Auto"
+                                  Padding="10"
+                                  RowSpacing="5"
+                                  x:DataType="model:OpenOrderParameter">
+
+
+                                                        <Label Grid.Column="1"
+                                       Grid.Row="0"
+                                       Text="{Binding DateGmt, Converter={StaticResource LongDateConverter}}"
+                                       Style="{StaticResource SmallSecondaryLabelStyle}" />
+
+                                                        <StackLayout Orientation="Horizontal"
+                                             Grid.Column="1"
+                                             Grid.Row="2"
+                                             Spacing="0">
+
+                                                            <Label Text="Address"
+                                           Style="{StaticResource SmallSecondaryLabelStyle}" />
+
+                                                            <Label Text=": "
+                                           Style="{StaticResource SmallSecondaryLabelStyle}" />
+
+                                                            <Label Text="{Binding Address2Display}"
+                                           Style="{StaticResource SmallSecondaryLabelStyle}"
+                                           MaxLines="1"
+                                           LineBreakMode="TailTruncation" />
+
+                                                        </StackLayout>
+
+                                                        <Label Grid.Column="3"
+                                       Grid.RowSpan="2"
+                                       Text="{Binding GrandTotal, StringFormat='${0:F2}'}"
+                                       Style="{StaticResource BoldMediumSecondaryLabelStyle}"
+                                       HorizontalTextAlignment="End"
+                                       VerticalTextAlignment="Center" />
+
+                                                        <Grid.GestureRecognizers>
+
+                                                            <TapGestureRecognizer NumberOfTapsRequired="1"
+                                                          Command="{Binding Source={RelativeSource
+                                                            AncestorType={x:Type vm:HomeViewModel}}, Path=ItemTapped}"
+                                                          CommandParameter="{Binding .}" />
+
+                                                        </Grid.GestureRecognizers>
+
+                                                    </Grid>
+                                                </StackLayout>
+                                            </StackLayout>
+
+                                        </pv:PancakeView>
+
+                                    </ContentView>
+
+                                </DataTemplate>
+
+                            </CollectionView.ItemTemplate>
+
+                            <CollectionView.EmptyView>
+
+                                <Grid RowDefinitions="Auto, *, Auto">
+
+                                    <ContentView />
+
+                                    <StackLayout Padding="30"
+                                 Spacing="10"
+                                 Grid.Row="1"
+                                 VerticalOptions="Start">
+
+                                        <Label Text="{x:Static res:AppResources.NoItems}"
+                               Style="{StaticResource MediumSecondaryLabelStyle}"
+                               HorizontalTextAlignment="Center" />
+
+                                        <Image Margin="20">
+                                            <Image.Source>
+                                                <FontImageSource Glyph="{x:Static md:Icons.Search}"
+                                                 FontFamily="Material"
+                                                 Color="{AppThemeBinding Light={StaticResource SecondaryTextColorLight},
+                                                    Dark={StaticResource SecondaryTextColorDark}}"
+                                                 Size="120" />
+                                            </Image.Source>
+                                        </Image>
+
+                                    </StackLayout>
+
+                                    <ContentView Grid.Row="2" />
+
+                                </Grid>
+
+                            </CollectionView.EmptyView>
+
+                        </CollectionView>
+                    </ScrollView>
+
+                </StackLayout>
+            </RefreshView>
+
+
+            <dragview:DragView
+             IsVisible="{Binding HasOrders}"
+             DragDirection="Up"
+             MaxBounds="0.5"
+             MinBounds="0.13"
+             BackgroundColor="Transparent"
+             AbsoluteLayout.LayoutFlags="PositionProportional, WidthProportional"
+             AbsoluteLayout.LayoutBounds="1, 1, 1, AutoSize">   
+
+                <CollectionView ItemsSource="{Binding OngoingOrders}"
+                     SelectionMode="None"
+                     HeightRequest="250"
+                     AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="1,1,1,1"
+                     HorizontalScrollBarVisibility="Always">
+
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+
+                        <DataTemplate>
+                            <customview:OngoingOrdersView OngoingOrder="{Binding .}" />
+                        </DataTemplate>
+
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+            </dragview:DragView>
+
+            <BoxView x:Name="Filter"
+                     AbsoluteLayout.LayoutBounds="0,0,1,1"
+                     AbsoluteLayout.LayoutFlags="All"
+                     BackgroundColor="White"
+                     IsVisible="{Binding IsInitializing}"
+                     Opacity="1" />
+            <ActivityIndicator  IsRunning="True"
+                            VerticalOptions="CenterAndExpand"
+                            HorizontalOptions="CenterAndExpand"
+                             AbsoluteLayout.LayoutBounds="0.5,0.5,0.5,0.5"
+                             IsVisible="{Binding IsInitializing}"
+                                        AbsoluteLayout.LayoutFlags="All"/>
+        </AbsoluteLayout>
+    </ContentPage.Content>
+</ContentPage>
